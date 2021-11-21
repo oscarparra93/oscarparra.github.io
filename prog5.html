@@ -5,16 +5,13 @@
 	<title>Oscar Parra CIT140</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
+  
     <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.1.2/handlebars.min.js"></script>
     <!-- bootstrap on github, need to use https for these links -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-	
-
-		
-	</script>
+   
 </head>
 <body>
 	<div class='container'>
@@ -24,8 +21,8 @@
 		<h2> Select a Major</h2>
 		<p>We filter our dataset by Major</p>
 		
-		<button  type="button" id="citbutn" onClick="getData('CIT')" > CIT Majors</button> 
-		<button  type="button" id="busbtn" onClick="getData('BUS')" >CIT Majors</button> 
+		<button  type="button" id="citbtn"> CIT Majors</button>
+		<button  type="button" id="busbtn" >CIT Majors</button> 
 		<div id="show">
 		
 		 </div>
@@ -45,26 +42,48 @@
  
  </script>
  <script>
-getData(major){
- var request = new XMLHttpRequest();
- request.open('GET','cit5students.json');
+ window.onload=function(){
+	document.getElementById("citbtn").onclick=function(){
+	var request = new XMLHttpRequest();
+	request.open('GET','cit5students.json');
+	request.onload = function() { 
+	
+	var data=JSON.parse(request.responseText);  
+	students=data.filter(getstudentds)
+	function getstudentds(student) {
+				return student.major == "CIT";  
+			}
+	if(request.status ==200){
+	var templateText = document.getElementById('tableTemplate').innerHTML;
+	var compiledTemplateText = Handlebars.compile(templateText);       
+	compiledHtml = compiledTemplateText({ rows: students})          
+	document.getElementById('show').innerHTML = compiledHtml;
+	}else{
+	document.getElementById('show').innerHTML = "There was an error, students not found";
+	}
+	}
+	}
+	document.getElementById("busbtn").onclick=function(){
+	var request = new XMLHttpRequest();
+	request.open('GET','cit5students.json');
+	request.onload = function() { 
  
- request.onload=function(){
- var data=JSON.parse(request.responseText);  
- students=data.filter(getstudentds(major)){
-	return students.major==major;
- });
- if(request.status ==200){
-  var templateText = document.getElementById('tableTemplate').innerHTML;
-  var compiledTemplateText = Handlebars.compile(templateText);       
-  compiledHtml = compiledTemplateText({ rows: students})          
-  document.getElementById('show').innerHTML = compiledHtml;
- }else{
- document.getElementById('show').innerHTML = "There was an error, students not found";
- }
- }
- request.send(null);
-	 }
+	var data2=JSON.parse(request.responseText);  
+	students=data.filter(getstudentds)
+	function getstudentds(student) {
+				return student.major == "BUS";  
+			}
+	if(request.status ==200){
+	var templateText = document.getElementById('tableTemplate').innerHTML;
+	var compiledTemplateText = Handlebars.compile(templateText);       
+	compiledHtml = compiledTemplateText({ rows: students})          
+	document.getElementById('show').innerHTML = compiledHtml;
+	}else{
+	document.getElementById('show').innerHTML = "There was an error, students not found";
+	}
+	}
+	}
+		}
  </script>
  
 </html>
